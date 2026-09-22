@@ -1,0 +1,360 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Colors */
+  --color-carbon: #000000;
+  --color-paper-white: #ffffff;
+  --color-sky-wash: #dceeff;
+  --color-concrete-gray: #cccccc;
+  --color-soft-mist: #e9e9e9;
+  --color-electric-blue: #4da2ff;
+  --color-mint-pop: #55db9c;
+  --color-lavender: #e9ccff;
+  --color-ember: #fb4903;
+  --color-sunburst: #ffd731;
+  --color-voltage-violet: #5c4ade;
+
+  /* Fonts */
+  --font-lateral: 'Unbounded', ui-sans-serif, system-ui, sans-serif;
+  --font-aeonik-pro: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-18: 72px;
+  --spacing-22: 88px;
+  --spacing-30: 120px;
+
+  /* Border radius */
+  --radius-2xl: 16px;
+  --radius-2xl-2: 20px;
+  --radius-3xl: 30px;
+  --radius-3xl-2: 40px;
+  --radius-pills: 1600px;
+  --radius-full: 1600px;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Easing tokens — lifted from slush.app */
+  --cubic-default: cubic-bezier(0.65, 0.05, 0, 1);
+  --color-ease: cubic-bezier(0.216, 0.62, 0.356, 1);
+  --smooth-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --elastic-ease-out: linear(
+    0,
+    0.5737 7.6%,
+    0.8382 11.87%,
+    0.9463 14.19%,
+    1.0292 16.54%,
+    1.0886 18.97%,
+    1.1258 21.53%,
+    1.137 22.97%,
+    1.1424 24.48%,
+    1.1423 26.1%,
+    1.1366 27.86%,
+    1.1165 31.01%,
+    1.0507 38.62%,
+    1.0219 42.57%,
+    0.9995 46.99%,
+    0.9872 51.63%,
+    0.9842 58.77%,
+    1.0011 81.26%,
+    1
+  );
+  --duration-default: 0.75s;
+  --duration-medium: 0.85s;
+  --duration-fade: 0.15s;
+}
+
+html {
+  scroll-behavior: initial;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper-white);
+  color: var(--color-carbon);
+  font-family: var(--font-aeonik-pro);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-sunburst);
+  color: var(--color-carbon);
+}
+
+/* ---------- Display typography (sculptural, crushed) ---------- */
+.display {
+  font-family: var(--font-lateral);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--color-carbon);
+}
+
+/* ---------- Hand-cut sticker outline ---------- */
+.outline {
+  border: 1px solid var(--color-carbon);
+}
+
+/* ---------- Floating stickers ---------- */
+@keyframes float-a {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -14px;
+  }
+}
+
+.sticker-float {
+  rotate: var(--rot, 0deg);
+  animation: float-a 5s ease-in-out infinite;
+}
+
+/* ---------- Ribbon canvas ---------- */
+.ribbon-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---------- Scroll reveal base ---------- */
+.reveal,
+.reveal-card {
+  opacity: 0;
+}
+
+.reveal-card.hoverable {
+  transition: transform 0.5s var(--elastic-ease-out);
+}
+
+.reveal-card.hoverable:hover {
+  transform: translateY(-12px) rotate(-1.5deg) scale(1.02);
+}
+
+/* ---------- Page transition ---------- */
+.page-enter {
+  animation: page-in 0.55s var(--smooth-ease) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Auto-hide nav ---------- */
+.nav-item {
+  transition:
+    transform 0.5s var(--elastic-ease-out),
+    opacity 0.4s ease,
+    background-color 0.2s var(--color-ease);
+}
+
+.nav-pill {
+  transition: opacity 0.3s ease;
+  transition-delay: 0.08s;
+}
+
+.nav-hidden .nav-item {
+  transform: translateY(-260%);
+  opacity: 0;
+}
+
+.nav-hidden .nav-pill {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Sticker image ---------- */
+.sticker-img {
+  filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.12));
+  transition:
+    transform 0.6s var(--elastic-ease-out),
+    filter 0.3s ease;
+}
+
+.group:hover .sticker-img {
+  transform: scale(1.22) rotate(8deg) translateY(-6px);
+  filter: drop-shadow(0 12px 0 rgba(0, 0, 0, 0.18));
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-carbon);
+  border-radius: 1600px;
+  overflow: hidden;
+  background: var(--btn-bg, transparent);
+  transition: transform 0.5s var(--elastic-ease-out);
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.955);
+}
+
+.btn__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--btn-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--cubic-default);
+}
+
+.btn:hover .btn__fill,
+.btn:focus-visible .btn__fill {
+  transform: scaleX(1);
+}
+
+.btn__label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-aeonik-pro);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.032em;
+  white-space: nowrap;
+  color: var(--btn-fg, var(--color-carbon));
+  transition: color 0.3s ease;
+}
+
+.btn--fill:hover .btn__label,
+.btn--fill:focus-visible .btn__label {
+  color: var(--btn-text, var(--color-paper-white));
+}
+
+/* ---------- Liquid glass panel ---------- */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticker-float {
+    animation: none !important;
+  }
+
+  .btn__fill {
+    transition: none !important;
+  }
+}
+
+/* ---------- Text reveal ---------- */
+.reveal-text {
+  opacity: 0;
+}
+
+.reveal-char {
+  display: inline-block;
+}
+
+/* ---------- Preloader ---------- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-carbon);
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.preloader-name {
+  font-size: clamp(48px, 12vw, 160px);
+  color: var(--color-paper-white);
+  text-transform: uppercase;
+  line-height: 0.8;
+  letter-spacing: 0;
+  animation: preloader-pop 0.7s var(--smooth-ease) both;
+}
+
+.preloader-hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes preloader-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Featured marquee ---------- */
+.featured-marquee {
+  overflow: hidden;
+}
+
+.featured-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: featured-scroll 40s linear infinite;
+}
+
+.featured-marquee:hover .featured-track {
+  animation-play-state: paused;
+}
+
+@keyframes featured-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-track {
+    animation: none !important;
+  }
+}
