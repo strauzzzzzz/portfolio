@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useWipeNavigate } from '../lib/wipe'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -11,10 +13,27 @@ import { storageUrl } from '../lib/supabase'
 import Button from '../components/Button'
 import Magnetic from '../components/Magnetic'
 import ProjectImage from '../components/ProjectImage'
+import AudioPlayer from '../components/AudioPlayer'
 import { Sticker, SparkGlyph } from '../components/Stickers'
 
 function mediaSrc(file: string) {
   return encodeURI(storageUrl(file))
+}
+
+function useEscape(active: boolean, close: () => void) {
+  useEffect(() => {
+    if (!active) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    window.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [active, close])
 }
 
 function TelegramIcon({ size = 15 }: { size?: number }) {
@@ -35,6 +54,8 @@ function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
   const [open, setOpen] = useState(false)
   const [failed, setFailed] = useState(false)
   const ref = useRef<HTMLVideoElement>(null)
+  const [ratio, setRatio] = useState(16 / 9)
+  useEscape(open, () => setOpen(false))
 
   // Only decode and play the preview while it is actually on screen.
   useEffect(() => {
@@ -56,7 +77,10 @@ function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-[24px] outline">
+      <div
+        className="group relative mx-auto overflow-hidden rounded-[24px] outline"
+        style={{ aspectRatio: ratio, width: `min(100%, ${72 * ratio}vh)` }}
+      >
         <video
           ref={ref}
           src={src}
@@ -64,8 +88,12 @@ function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
           loop
           playsInline
           preload="metadata"
+          onLoadedMetadata={(e) => {
+            const { videoWidth: w, videoHeight: h } = e.currentTarget
+            if (w && h) setRatio(w / h)
+          }}
           onError={() => setFailed(true)}
-          className="max-h-[440px] w-full bg-black/10 object-cover"
+          className="h-full w-full bg-black/10 object-cover"
         />
         <button
           type="button"
@@ -78,9 +106,10 @@ function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
         </button>
       </div>
 
-      {open && (
+      {open &&
+        createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6"
+          className="fixed inset-0 z-[240] flex items-center justify-center bg-black/85 p-6"
           onClick={() => setOpen(false)}
         >
           <div
@@ -102,7 +131,7 @@ function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
             </button>
           </div>
         </div>
-      )}
+        , document.body)}
     </>
   )
 }
@@ -120,6 +149,7 @@ function ImagePreview({
 }) {
   const [open, setOpen] = useState(false)
   const [failed, setFailed] = useState(false)
+  useEscape(open, () => setOpen(false))
   if (failed) return null
 
   return (
@@ -143,9 +173,10 @@ function ImagePreview({
         </button>
       </div>
 
-      {open && (
+      {open &&
+        createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6"
+          className="fixed inset-0 z-[240] flex items-center justify-center bg-black/85 p-6"
           onClick={() => setOpen(false)}
         >
           <div
@@ -166,24 +197,15 @@ function ImagePreview({
             </button>
           </div>
         </div>
-      )}
+        , document.body)}
     </>
   )
 }
 
-function AudioItem({ src }: { src: string }) {
+function AudioItem({ src, index }: { src: string; index: number }) {
   const [failed, setFailed] = useState(false)
   if (failed) return null
-  return (
-    <div className="outline rounded-[20px] bg-paper-white/40 p-4">
-      <audio
-        src={src}
-        controls
-        onError={() => setFailed(true)}
-        className="w-full"
-      />
-    </div>
-  )
+  return <AudioPlayer src={src} index={index} onError={() => setFailed(true)} />
 }
 
 function ItemMedia({
@@ -210,8 +232,8 @@ function ItemMedia({
         ))}
         {audio.length > 0 && (
           <div className="space-y-4">
-            {audio.map((a) => (
-              <AudioItem key={a} src={mediaSrc(a)} />
+            {audio.map((a, i) => (
+              <AudioItem key={a} src={mediaSrc(a)} index={i} />
             ))}
           </div>
         )}
@@ -258,6 +280,7 @@ export default function ProjectDetail() {
   const { slug } = useParams()
   const { lang, t } = useLanguage()
   const { projects } = useData()
+  const wipe = useWipeNavigate()
   const project = projects.find((p) => p.slug === slug)
   const [searchParams] = useSearchParams()
   const itemParam = searchParams.get('item')
@@ -427,6 +450,7 @@ export default function ProjectDetail() {
                   <Link
                     key={p.slug}
                     to={`/work/${p.slug}`}
+                    onClick={(e) => wipe(e, p.color, `/work/${p.slug}`)}
                     className="outline group flex flex-col rounded-[20px] p-6"
                     style={{ background: p.color }}
                   >

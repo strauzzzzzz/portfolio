@@ -9,9 +9,7 @@ import {
   RocketGlyph,
   CoinGlyph,
   SparkGlyph,
-  BoltGlyph,
   CheckGlyph,
-  StarGlyph,
 } from './Stickers'
 import { useLanguage } from '../i18n/LanguageContext'
 import { profile } from '../data'
@@ -172,23 +170,6 @@ export default function Hero({
         className="right-[16%] bottom-[24%]"
       >
         <SparkGlyph color="#fff" />
-      </Sticker>
-      <Sticker
-        color="#e9ccff"
-        size={52}
-        rotate={18}
-        className="left-[42%] top-[12%] max-sm:hidden"
-      >
-        <BoltGlyph />
-      </Sticker>
-      <Sticker
-        color="#ffd731"
-        size={48}
-        rotate={-8}
-        radius={14}
-        className="right-[30%] top-[10%]"
-      >
-        <StarGlyph />
       </Sticker>
     </section>
   )

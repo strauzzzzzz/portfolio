@@ -2,7 +2,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 import Button from './Button'
 import { profile } from '../data'
 import { useSectionNav } from '../lib/scroll'
-import { Sticker, RocketGlyph, MusicGlyph } from './Stickers'
+import { Sticker, RocketGlyph } from './Stickers'
 import MiniScene from './MiniScene'
 
 const socials = [{ label: 'Telegram', href: 'https://t.me/mtiwork' }]
@@ -27,14 +27,6 @@ export default function Contact() {
             className="right-[8%] top-[12%]"
           >
             <RocketGlyph color="#fff" />
-          </Sticker>
-          <Sticker
-            color="#55db9c"
-            size={54}
-            rotate={-12}
-            className="left-[7%] bottom-[18%]"
-          >
-            <MusicGlyph />
           </Sticker>
 
           <h2

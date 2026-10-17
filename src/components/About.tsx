@@ -1,11 +1,5 @@
 import { useLanguage } from '../i18n/LanguageContext'
-import {
-  Sticker,
-  HeartGlyph,
-  SparkGlyph,
-  SmileyGlyph,
-  MusicGlyph,
-} from './Stickers'
+import { Sticker, HeartGlyph } from './Stickers'
 import MiniScene from './MiniScene'
 
 export default function About() {
@@ -25,30 +19,6 @@ export default function About() {
         className="right-[12%] top-[16%]"
       >
         <HeartGlyph />
-      </Sticker>
-      <Sticker
-        color="#ffd731"
-        size={52}
-        rotate={14}
-        className="left-[10%] bottom-[14%]"
-      >
-        <SparkGlyph />
-      </Sticker>
-      <Sticker
-        color="#e9ccff"
-        size={48}
-        rotate={-8}
-        className="right-[24%] bottom-[22%]"
-      >
-        <SmileyGlyph />
-      </Sticker>
-      <Sticker
-        color="#4da2ff"
-        size={50}
-        rotate={10}
-        className="left-[20%] top-[12%]"
-      >
-        <MusicGlyph color="#fff" />
       </Sticker>
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6">

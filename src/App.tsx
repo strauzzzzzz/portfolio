@@ -4,6 +4,7 @@ import Nav from './components/Nav'
 import Home from './pages/Home'
 import ProjectDetail from './pages/ProjectDetail'
 import Preloader from './components/Preloader'
+import Cursor from './components/Cursor'
 
 const Admin = lazy(() => import('./pages/Admin'))
 import { useData } from './context/DataContext'
@@ -79,6 +80,7 @@ export default function App() {
     <>
       {!gone && <Preloader fading={hiding} />}
       <ScrollManager />
+      <Cursor />
       <Nav />
       <main>
         <AppRoutes />

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useWipeNavigate } from '../lib/wipe'
 import { useLanguage } from '../i18n/LanguageContext'
 import { skills } from '../data'
-import { Sticker, StarGlyph, CoinGlyph, HeartGlyph } from './Stickers'
-import MiniScene from './MiniScene'
+import { Sticker, StarGlyph, CoinGlyph } from './Stickers'
 
 const stickerColors = [
   '#4da2ff',
@@ -15,14 +15,13 @@ const stickerColors = [
 
 export default function Skills() {
   const { lang, t } = useLanguage()
+  const wipe = useWipeNavigate()
 
   return (
     <section
       id="skills"
       className="relative overflow-hidden bg-sky-wash py-24 md:py-32"
     >
-      <MiniScene className="left-4 bottom-6 h-72 w-72" />
-
       <Sticker
         color="#ffd731"
         size={56}
@@ -39,14 +38,6 @@ export default function Skills() {
         className="right-[9%] top-[20%]"
       >
         <CoinGlyph />
-      </Sticker>
-      <Sticker
-        color="#e9ccff"
-        size={48}
-        rotate={10}
-        className="right-[18%] bottom-[16%]"
-      >
-        <HeartGlyph />
       </Sticker>
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6">
@@ -67,6 +58,9 @@ export default function Skills() {
             <Link
               key={skill.en}
               to={`/work/${skill.slug}`}
+              onClick={(e) =>
+                wipe(e, stickerColors[i % stickerColors.length], `/work/${skill.slug}`)
+              }
               className="reveal-pop skill-pill outline rounded-full px-6 py-3 font-aeonik-pro text-base font-bold"
               style={{ background: stickerColors[i % stickerColors.length] }}
             >

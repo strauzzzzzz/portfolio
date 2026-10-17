@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 
 export const ghostBtn =
@@ -137,7 +138,7 @@ export function Modal({
     }
   }, [onClose])
 
-  return (
+  return createPortal(
     <div
       className="admin-fade fixed inset-0 z-[200] flex items-end justify-center bg-carbon/60 sm:items-center sm:p-6"
       onMouseDown={(e) => {
@@ -168,6 +169,7 @@ export function Modal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
