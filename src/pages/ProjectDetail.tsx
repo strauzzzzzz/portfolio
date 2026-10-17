@@ -34,17 +34,36 @@ function TelegramIcon({ size = 15 }: { size?: number }) {
 function VideoPreview({ src, openLabel }: { src: string; openLabel: string }) {
   const [open, setOpen] = useState(false)
   const [failed, setFailed] = useState(false)
+  const ref = useRef<HTMLVideoElement>(null)
+
+  // Only decode and play the preview while it is actually on screen.
+  useEffect(() => {
+    const video = ref.current
+    if (!video) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !reduced) void video.play().catch(() => {})
+        else video.pause()
+      },
+      { threshold: 0.25 },
+    )
+    io.observe(video)
+    return () => io.disconnect()
+  }, [failed])
+
   if (failed) return null
 
   return (
     <>
       <div className="group relative overflow-hidden rounded-[24px] outline">
         <video
+          ref={ref}
           src={src}
-          autoPlay
           muted
           loop
           playsInline
+          preload="metadata"
           onError={() => setFailed(true)}
           className="max-h-[440px] w-full bg-black/10 object-cover"
         />

@@ -1,13 +1,6 @@
-import { useEffect, useState } from 'react'
-import GlCanvas from './GlCanvas'
-import { FloatShape } from './FloatingShapes'
-import type { Shape } from './FloatingShapes'
+import { Suspense, lazy, useEffect, useState } from 'react'
 
-const MINI_SHAPES: Shape[] = [
-  { position: [-1, 0.5, 0], color: '#5c4ade', type: 'icosa', scale: 1 },
-  { position: [1.2, -0.4, 0], color: '#ffd731', type: 'torus', scale: 0.8 },
-  { position: [0, 1, -0.5], color: '#fb4903', type: 'sphere', scale: 0.7 },
-]
+const MiniGl = lazy(() => import('./MiniGl'))
 
 export default function MiniScene({
   className = '',
@@ -28,15 +21,8 @@ export default function MiniScene({
   if (!wide) return null
 
   return (
-    <GlCanvas
-      className={`pointer-events-none absolute ${className}`}
-      camera={{ position: [0, 0, 6], fov: 45 }}
-    >
-      <ambientLight intensity={0.75} />
-      <directionalLight position={[4, 4, 6]} intensity={1.5} />
-      {MINI_SHAPES.map((shape, i) => (
-        <FloatShape key={i} shape={shape} index={i} />
-      ))}
-    </GlCanvas>
+    <Suspense fallback={null}>
+      <MiniGl className={className} />
+    </Suspense>
   )
 }

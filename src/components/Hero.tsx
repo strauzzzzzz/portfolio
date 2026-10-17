@@ -1,12 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { Suspense, lazy, useEffect, useRef } from 'react'
 import type { MutableRefObject } from 'react'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
-import { useThree } from '@react-three/fiber'
-import type { ReactNode } from 'react'
-import GlCanvas from './GlCanvas'
-import Ribbon from './Ribbon'
-import FloatingShapes from './FloatingShapes'
 import Button from './Button'
 import Magnetic from './Magnetic'
 import {
@@ -22,12 +17,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { profile } from '../data'
 import { isIntroDone } from '../lib/intro'
 
-/** Scales the scene down on narrow screens so the ribbon stays in frame. */
-function FitToViewport({ children }: { children: ReactNode }) {
-  const width = useThree((s) => s.viewport.width)
-  const scale = Math.min(1, Math.max(0.5, width / 11))
-  return <group scale={scale}>{children}</group>
-}
+const HeroGl = lazy(() => import('./HeroGl'))
 
 export default function Hero({
   scrollRef,
@@ -111,22 +101,9 @@ export default function Hero({
       id="top"
       className="relative min-h-[100svh] overflow-hidden bg-sky-wash"
     >
-      <GlCanvas
-        className="ribbon-layer"
-        camera={{ position: [0, 0, 8], fov: 45 }}
-      >
-        <ambientLight intensity={0.75} />
-        <directionalLight position={[5, 6, 6]} intensity={1.6} />
-        <directionalLight
-          position={[-6, -2, -3]}
-          intensity={0.5}
-          color="#55db9c"
-        />
-        <FitToViewport>
-          <Ribbon scrollRef={scrollRef} />
-          <FloatingShapes />
-        </FitToViewport>
-      </GlCanvas>
+      <Suspense fallback={null}>
+        <HeroGl scrollRef={scrollRef} />
+      </Suspense>
 
       <div
         ref={contentRef}
