@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { useSectionNav } from '../lib/scroll'
 
 function hexToRgb(hex: string) {
   const value = hex.replace('#', '')
@@ -23,6 +24,7 @@ function contrastText(hex: string) {
 type ButtonProps = {
   href?: string
   to?: string
+  section?: string
   accent?: string
   variant?: 'solid' | 'ghost' | 'fill'
   external?: boolean
@@ -33,12 +35,14 @@ type ButtonProps = {
 export default function Button({
   href,
   to,
+  section,
   accent = '#ffd731',
   variant = 'solid',
   external = false,
   className = '',
   children,
 }: ButtonProps) {
+  const goTo = useSectionNav()
   const isFill = variant === 'fill'
   const isGhost = variant === 'ghost'
 
@@ -60,6 +64,19 @@ export default function Button({
   )
 
   const cls = `btn ${isFill ? 'btn--fill' : ''} ${className}`.trim()
+
+  if (section) {
+    return (
+      <a
+        href="/"
+        onClick={(e) => goTo(section, e)}
+        className={cls}
+        style={style}
+      >
+        {inner}
+      </a>
+    )
+  }
 
   if (to) {
     return (

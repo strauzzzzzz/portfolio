@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Project, WorkItem } from '../data'
@@ -9,28 +9,31 @@ type DataContextValue = {
   projects: Project[]
   featured: FeaturedRef[]
   loading: boolean
+  error: boolean
+  refresh: () => Promise<void>
 }
 
 const DataContext = createContext<DataContextValue>({
   projects: [],
   featured: [],
   loading: true,
+  error: false,
+  refresh: async () => {},
 })
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([])
   const [featured, setFeatured] = useState<FeaturedRef[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
+  const load = useCallback(async () => {
+    try {
       const [pRes, iRes] = await Promise.all([
         supabase.from('projects').select('*').order('sort_order'),
         supabase.from('items').select('*').order('sort_order'),
       ])
-      if (cancelled) return
+      if (pRes.error || iRes.error) throw pRes.error ?? iRes.error
 
       const projectRows = pRes.data ?? []
       const itemRows = iRes.data ?? []
@@ -96,17 +99,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       setProjects(list)
       setFeatured(featuredRefs)
+      setError(false)
+    } catch (e) {
+      console.error('Failed to load content', e)
+      setError(true)
+    } finally {
       setLoading(false)
-    }
-
-    load()
-    return () => {
-      cancelled = true
     }
   }, [])
 
+  useEffect(() => {
+    void load()
+  }, [load])
+
   return (
-    <DataContext.Provider value={{ projects, featured, loading }}>
+    <DataContext.Provider value={{ projects, featured, loading, error, refresh: load }}>
       {children}
     </DataContext.Provider>
   )

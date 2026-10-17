@@ -1,4 +1,5 @@
-import { Canvas } from '@react-three/fiber'
+import { useEffect, useState } from 'react'
+import GlCanvas from './GlCanvas'
 import { FloatShape } from './FloatingShapes'
 import type { Shape } from './FloatingShapes'
 
@@ -13,19 +14,29 @@ export default function MiniScene({
 }: {
   className?: string
 }) {
+  // Decorative only: skip the extra WebGL contexts entirely on phones.
+  const [wide, setWide] = useState(
+    () => window.matchMedia('(min-width: 768px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    const onChange = () => setWide(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  if (!wide) return null
+
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0, 6], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ alpha: true, antialias: true }}
-      >
-        <ambientLight intensity={0.75} />
-        <directionalLight position={[4, 4, 6]} intensity={1.5} />
-        {MINI_SHAPES.map((shape, i) => (
-          <FloatShape key={i} shape={shape} index={i} />
-        ))}
-      </Canvas>
-    </div>
+    <GlCanvas
+      className={`pointer-events-none absolute ${className}`}
+      camera={{ position: [0, 0, 6], fov: 45 }}
+    >
+      <ambientLight intensity={0.75} />
+      <directionalLight position={[4, 4, 6]} intensity={1.5} />
+      {MINI_SHAPES.map((shape, i) => (
+        <FloatShape key={i} shape={shape} index={i} />
+      ))}
+    </GlCanvas>
   )
 }

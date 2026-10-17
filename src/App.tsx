@@ -6,29 +6,26 @@ import ProjectDetail from './pages/ProjectDetail'
 import Admin from './pages/Admin'
 import Preloader from './components/Preloader'
 import { useData } from './context/DataContext'
-import { getLenis } from './lib/lenis'
+import { scrollToSection } from './lib/scroll'
+import { setIntroDone } from './lib/intro'
 
 function ScrollManager() {
-  const { pathname, hash } = useLocation()
+  const location = useLocation()
+  const { pathname, key } = location
+  const section = (location.state as { section?: string } | null)?.section
 
   useEffect(() => {
-    if (hash) {
-      const t = window.setTimeout(() => {
-        const el = document.getElementById(hash.slice(1))
-        if (!el) return
-        const lenis = getLenis()
-        if (lenis) {
-          lenis.scrollTo(el, { offset: -80, duration: 1.2 })
-        } else {
-          window.scrollTo({
-            top: el.getBoundingClientRect().top + window.scrollY - 80,
-          })
-        }
-      }, 80)
-      return () => window.clearTimeout(t)
+    if (!section) {
+      window.scrollTo(0, 0)
+      return
     }
-    window.scrollTo(0, 0)
-  }, [pathname, hash])
+    // Arrived from another page: wait for Home to mount and its entry animation to settle.
+    const t = window.setTimeout(() => {
+      scrollToSection(section)
+      window.history.replaceState({ ...window.history.state, usr: null }, '')
+    }, 600)
+    return () => window.clearTimeout(t)
+  }, [pathname, key, section])
 
   return null
 }
@@ -58,6 +55,10 @@ export default function App() {
   }, [])
 
   const hiding = !loading && minElapsed
+
+  useEffect(() => {
+    if (hiding) setIntroDone()
+  }, [hiding])
 
   useEffect(() => {
     if (hiding) {

@@ -23,7 +23,7 @@ export type Translations = {
     openFull: string
     featured: string
   }
-  about: { eyebrow: string; title: string; p1: string; p2: string; p3: string }
+  about: { eyebrow: string; title: string; p1: string; p2: string; p3: string; hint: string }
   skills: { eyebrow: string; title: string }
   contact: { title: string; text: string; backToTop: string; builtWith: string }
 }
@@ -63,9 +63,10 @@ export const ui: Record<Lang, Translations> = {
     about: {
       eyebrow: 'About me',
       title: 'About',
-      p1: 'I’m Sergey — a multidisciplinary creative. I work in whatever direction a project needs: from sound and visuals to building the site itself. I take a task from the first idea to the finished result.',
-      p2: 'Music is my foundation. I write tracks and beats in FL Studio — from lo-fi and hip-hop to electronic — building arrangements from live and synthesized instruments, then mixing them into a finished sound.',
-      p3: 'Beyond sound, I do design: brand identity, logos, social media graphics. Motion graphics and video editing in After Effects. And web — landing pages I code by hand.',
+      p1: 'Hi, I’m Sergey. I make music, design logos and graphics, cut videos and code websites. I never managed to pick just one of these, so I do all of them.',
+      p2: 'Music came first. I make beats and tracks in FL Studio, mostly hip-hop and electronic, sometimes something calmer. I do the arrangement and the mixing myself.',
+      p3: 'The rest grew out of that. I do branding and social media graphics in Figma, motion and editing in After Effects and Premiere, and a bit of 3D in Blender. I write sites by hand in HTML, CSS and JS, and I’m still learning React. If you need any of this, write to me.',
+      hint: 'Hover to expand',
     },
     skills: {
       eyebrow: 'Toolbox',
@@ -112,9 +113,10 @@ export const ui: Record<Lang, Translations> = {
     about: {
       eyebrow: 'Обо мне',
       title: 'Обо мне',
-      p1: 'Я Сергей — мультидисциплинарный креатив. Работаю в том направлении, которое нужно проекту: от звука и картинки до вёрстки сайта. Беру задачу целиком — от идеи до готового результата.',
-      p2: 'Музыка — моя база. Пишу треки и биты в FL Studio: от lo-fi и хип-хопа до электроники. Собираю аранжировки из живых и синтезированных инструментов, свожу и довожу до финального звучания.',
-      p3: 'Помимо звука — дизайн: айдентика, логотипы, оформление соцсетей. Моушн-графика и монтаж роликов в After Effects. И веб — лендинги, которые верстаю вручную.',
+      p1: 'Привет, я Сергей. Делаю музыку, рисую логотипы и графику, монтирую видео и верстаю сайты. Выбрать что-то одно у меня не получилось, поэтому занимаюсь всем сразу.',
+      p2: 'Началось всё с музыки. Пишу биты и треки в FL Studio, в основном хип-хоп и электронику, иногда что-то поспокойнее. Аранжировку и сведение делаю сам.',
+      p3: 'Остальное выросло уже из этого. Айдентику и графику для соцсетей делаю в Figma, моушн и монтаж — в After Effects и Premiere, немного моделирую в Blender. Сайты верстаю руками на HTML, CSS и JS, React пока учу. Если нужно что-то из этого — пишите.',
+      hint: 'Наведи, чтобы раскрыть',
     },
     skills: {
       eyebrow: 'Инструменты',

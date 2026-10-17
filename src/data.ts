@@ -30,19 +30,21 @@ export type Project = {
   items: WorkItem[]
 }
 
-export type Skill = { en: string; ru: string }
+export type Skill = { en: string; ru: string; slug: string }
 
 export const skills: Skill[] = [
-  { en: 'FL Studio', ru: 'FL Studio' },
-  { en: 'Music Production', ru: 'Музыкальное продюсирование' },
-  { en: 'Beat Making', ru: 'Создание битов' },
-  { en: 'After Effects', ru: 'After Effects' },
-  { en: 'Premiere Pro', ru: 'Premiere Pro' },
-  { en: 'Motion Design', ru: 'Моушн-дизайн' },
-  { en: 'Figma', ru: 'Figma' },
-  { en: 'Graphic & Brand Design', ru: 'Графика и айдентика' },
-  { en: 'HTML / CSS', ru: 'HTML / CSS' },
-  { en: 'JavaScript', ru: 'JavaScript' },
-  { en: 'React Basics', ru: 'React (основы)' },
-  { en: 'Tailwind CSS', ru: 'Tailwind CSS' },
+  { en: 'FL Studio', ru: 'FL Studio', slug: 'beat-tape' },
+  { en: 'Music Production', ru: 'Музыкальное продюсирование', slug: 'single-demo' },
+  { en: 'Beat Making', ru: 'Создание битов', slug: 'beat-tape' },
+  { en: 'After Effects', ru: 'After Effects', slug: 'video-motion' },
+  { en: 'Premiere Pro', ru: 'Premiere Pro', slug: 'video-motion' },
+  { en: 'Motion Design', ru: 'Моушн-дизайн', slug: 'video-motion' },
+  { en: 'Blender', ru: 'Blender', slug: 'brand-identity' },
+  { en: '3D Modeling', ru: '3D-моделирование', slug: 'brand-identity' },
+  { en: 'Figma', ru: 'Figma', slug: 'brand-identity' },
+  { en: 'Graphic & Brand Design', ru: 'Графика и айдентика', slug: 'social-media-kit' },
+  { en: 'HTML / CSS', ru: 'HTML / CSS', slug: 'product-landing' },
+  { en: 'JavaScript', ru: 'JavaScript', slug: 'product-landing' },
+  { en: 'React Basics', ru: 'React (основы)', slug: 'product-landing' },
+  { en: 'Tailwind CSS', ru: 'Tailwind CSS', slug: 'product-landing' },
 ]

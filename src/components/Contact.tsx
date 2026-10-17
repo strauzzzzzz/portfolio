@@ -1,6 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import Button from './Button'
 import { profile } from '../data'
+import { useSectionNav } from '../lib/scroll'
 import { Sticker, RocketGlyph, MusicGlyph } from './Stickers'
 import MiniScene from './MiniScene'
 
@@ -8,6 +9,7 @@ const socials = [{ label: 'Telegram', href: 'https://t.me/mtiwork' }]
 
 export default function Contact() {
   const { t } = useLanguage()
+  const goTo = useSectionNav()
 
   return (
     <section
@@ -17,7 +19,7 @@ export default function Contact() {
       <MiniScene className="right-4 top-6 h-72 w-72" />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6">
-        <div className="outline reveal-card relative overflow-hidden rounded-[40px] bg-voltage-violet px-8 py-16 text-paper-white md:px-16 md:py-20">
+        <div className="hover-lift outline reveal-card relative overflow-hidden rounded-[40px] bg-voltage-violet px-8 py-16 text-paper-white md:px-16 md:py-20">
           <Sticker
             color="#fb4903"
             size={80}
@@ -71,7 +73,8 @@ export default function Contact() {
             {t.contact.builtWith}
           </span>
           <a
-            href="#top"
+            href="/"
+            onClick={(e) => goTo('top', e)}
             className="outline rounded-full bg-paper-white px-5 py-2.5 font-aeonik-pro text-sm font-bold transition-colors duration-200 hover:bg-sky-wash"
           >
             {t.contact.backToTop} ↑

@@ -1,6 +1,6 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { MutableRefObject } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
 function makeGrainTexture(size = 256) {
@@ -50,50 +50,69 @@ export default function Ribbon({
   }, [])
 
   const grain = useMemo(() => makeGrainTexture(), [])
+  const material = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#4da2ff',
+        roughness: 0.3,
+        metalness: 0.06,
+        bumpMap: grain,
+        bumpScale: 0.14,
+        roughnessMap: grain,
+      }),
+    [grain],
+  )
 
-  useFrame((state) => {
+  useEffect(
+    () => () => {
+      material.dispose()
+      grain.dispose()
+    },
+    [material, grain],
+  )
+
+  const smooth = useRef({ x: 0, y: 0, scroll: 0 })
+  const invalidate = useThree((s) => s.invalidate)
+
+  // Redraw the still frame (reduced motion / paused loop) when the page scrolls.
+  useEffect(() => {
+    const onScroll = () => invalidate()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [invalidate])
+
+  useFrame((state, delta) => {
+    const g = group.current
+    if (!g) return
     const t = state.clock.elapsedTime
-    const s = scrollRef.current
-    if (!group.current) return
-    group.current.rotation.y = Math.sin(t * 0.25) * 0.14 + s * 1.1
-    group.current.rotation.z = Math.cos(t * 0.2) * 0.07 - s * 0.3
-    group.current.rotation.x = s * -0.35
-    group.current.position.y = Math.sin(t * 0.5) * 0.18 + s * 0.8
-    group.current.position.z = s * -1.2
+    const k = 1 - Math.exp(-delta * 4)
+    const sm = smooth.current
+    sm.x += (state.pointer.x - sm.x) * k
+    sm.y += (state.pointer.y - sm.y) * k
+    sm.scroll += (scrollRef.current - sm.scroll) * Math.min(1, k * 2)
+    const s = sm.scroll
+
+    g.rotation.y = Math.sin(t * 0.25) * 0.14 + s * 1.1 + sm.x * 0.22
+    g.rotation.z = Math.cos(t * 0.2) * 0.07 - s * 0.3
+    g.rotation.x = s * -0.35 - sm.y * 0.12
+    g.position.y = Math.sin(t * 0.5) * 0.18 + s * 0.8
+    g.position.x = sm.x * 0.25
+    g.position.z = s * -1.2
   })
 
   return (
     <group ref={group}>
       <mesh>
         <tubeGeometry args={[curve, 220, 0.5, 24, false]} />
-        <meshStandardMaterial
-          color="#4da2ff"
-          roughness={0.3}
-          metalness={0.06}
-          bumpMap={grain}
-          bumpScale={0.14}
-          roughnessMap={grain}
-        />
+        <primitive object={material} attach="material" />
       </mesh>
       <mesh position={END_A}>
         <sphereGeometry args={[0.5, 24, 24]} />
-        <meshStandardMaterial
-          color="#4da2ff"
-          roughness={0.3}
-          metalness={0.06}
-          bumpMap={grain}
-          bumpScale={0.14}
-        />
+        <primitive object={material} attach="material" />
       </mesh>
       <mesh position={END_B}>
         <sphereGeometry args={[0.5, 24, 24]} />
-        <meshStandardMaterial
-          color="#4da2ff"
-          roughness={0.3}
-          metalness={0.06}
-          bumpMap={grain}
-          bumpScale={0.14}
-        />
+        <primitive object={material} attach="material" />
       </mesh>
     </group>
   )

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { skills } from '../data'
 import { Sticker, StarGlyph, CoinGlyph, HeartGlyph } from './Stickers'
@@ -61,15 +62,16 @@ export default function Skills() {
           </h2>
         </div>
 
-        <div className="reveal flex flex-wrap gap-3">
+        <div className="reveal-pop-group flex flex-wrap gap-3">
           {skills.map((skill, i) => (
-            <span
+            <Link
               key={skill.en}
-              className="outline rounded-full px-6 py-3 font-aeonik-pro text-base font-bold transition-transform hover:-translate-y-1"
+              to={`/work/${skill.slug}`}
+              className="reveal-pop skill-pill outline rounded-full px-6 py-3 font-aeonik-pro text-base font-bold"
               style={{ background: stickerColors[i % stickerColors.length] }}
             >
               {skill[lang]}
-            </span>
+            </Link>
           ))}
         </div>
       </div>

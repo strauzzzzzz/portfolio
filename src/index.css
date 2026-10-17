@@ -143,16 +143,9 @@ body {
 
 /* ---------- Scroll reveal base ---------- */
 .reveal,
-.reveal-card {
+.reveal-card,
+.reveal-drop {
   opacity: 0;
-}
-
-.reveal-card.hoverable {
-  transition: transform 0.5s var(--elastic-ease-out);
-}
-
-.reveal-card.hoverable:hover {
-  transform: translateY(-12px) rotate(-1.5deg) scale(1.02);
 }
 
 /* ---------- Page transition ---------- */
@@ -290,6 +283,66 @@ body {
   display: inline-block;
 }
 
+/* ---------- Hero intro ---------- */
+.hero-in {
+  opacity: 0;
+}
+
+.hero-name {
+  opacity: 0;
+}
+
+.hero-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.reveal-pop {
+  opacity: 0;
+}
+
+.hover-lift {
+  translate: 0 0;
+  transition: translate 0.5s var(--elastic-ease-out);
+}
+
+.hover-lift:hover {
+  translate: 0 -10px;
+}
+
+.detail-title {
+  opacity: 0;
+}
+
+.detail-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.skill-pill.hoverable {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.skill-pill.hoverable:hover {
+  transform: translateY(-10px) rotate(-4deg) scale(1.1);
+}
+
+.about-more {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.about-more--open {
+  max-height: 1200px;
+  opacity: 1;
+}
+
+.about-heading {
+  overflow: hidden;
+  max-height: 400px;
+}
+
 /* ---------- Preloader ---------- */
 .preloader {
   position: fixed;
@@ -357,4 +410,107 @@ body {
   .featured-track {
     animation: none !important;
   }
+}
+
+/* ---------- Focus ---------- */
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--color-voltage-violet);
+  outline-offset: 3px;
+}
+
+.admin-input {
+  transition:
+    box-shadow 0.2s var(--color-ease),
+    background-color 0.2s var(--color-ease);
+}
+
+.admin-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(92, 74, 222, 0.35);
+}
+
+/* ---------- Admin motion ---------- */
+.admin-pop {
+  animation: admin-pop 0.45s var(--smooth-ease) both;
+}
+
+@keyframes admin-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-toast {
+  animation: admin-toast 0.4s var(--elastic-ease-out) both;
+}
+
+@keyframes admin-toast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 24px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-pop,
+  .admin-toast,
+  .page-enter {
+    animation: none !important;
+  }
+}
+
+/* ---------- Mobile menu ---------- */
+.nav-menu {
+  transform-origin: top right;
+  animation: menu-in 0.35s var(--smooth-ease) both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- Project detail item swap ---------- */
+.item-in {
+  animation: item-in 0.5s var(--smooth-ease) both;
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-in {
+    animation: none !important;
+  }
+}
+
+/* Keep split headings from breaking inside a word */
+.reveal-word,
+.detail-word,
+.hero-word {
+  display: inline-block;
+  white-space: nowrap;
 }

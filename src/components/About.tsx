@@ -52,24 +52,25 @@ export default function About() {
       </Sticker>
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
-          <div>
-            <span className="outline reveal inline-block rounded-full bg-paper-white px-4 py-2 font-aeonik-pro text-xs font-bold uppercase tracking-[0.032em]">
-              {t.about.eyebrow}
-            </span>
-            <h2
-              className="display reveal-text mt-4"
-              style={{ fontSize: 'clamp(40px, 8vw, 120px)' }}
-            >
-              {t.about.title}
-            </h2>
-          </div>
+        <div className="text-center">
+          <span className="outline reveal inline-block rounded-full bg-paper-white px-4 py-2 font-aeonik-pro text-xs font-bold uppercase tracking-[0.032em]">
+            {t.about.eyebrow}
+          </span>
+          <h2
+            className="display reveal-text mt-4"
+            style={{
+              fontSize: 'clamp(40px, 8vw, 120px)',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {t.about.title}
+          </h2>
+        </div>
 
-          <div className="reveal liquid-glass space-y-5 p-8 font-aeonik-pro text-lg font-medium leading-relaxed text-carbon/90">
-            <p>{t.about.p1}</p>
-            <p>{t.about.p2}</p>
-            <p>{t.about.p3}</p>
-          </div>
+        <div className="reveal-drop liquid-glass mt-10 p-8 font-aeonik-pro text-lg font-medium leading-relaxed text-carbon/90 md:p-10">
+          <p>{t.about.p1}</p>
+          <p className="mt-5">{t.about.p2}</p>
+          <p className="mt-5">{t.about.p3}</p>
         </div>
       </div>
     </section>

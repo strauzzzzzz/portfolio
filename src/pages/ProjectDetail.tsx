@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
 import { useLanguage } from '../i18n/LanguageContext'
 import { profile } from '../data'
 import type { WorkItem } from '../data'
@@ -239,11 +241,45 @@ export default function ProjectDetail() {
   const { projects } = useData()
   const project = projects.find((p) => p.slug === slug)
   const [searchParams] = useSearchParams()
-  const [active, setActive] = useState(() => {
-    const max = project ? project.items.length - 1 : 0
-    const i = Number(searchParams.get('item'))
-    return Number.isFinite(i) ? Math.min(Math.max(i, 0), max) : 0
-  })
+  const itemParam = searchParams.get('item')
+  const titleRef = useRef<HTMLHeadingElement>(null)
+
+  // ?item= can only be resolved once the data has loaded, so derive it during render;
+  // a manual pick wins until the route or query changes.
+  const routeKey = `${slug}|${itemParam}`
+  const [picked, setPicked] = useState<{ key: string; index: number } | null>(null)
+  const maxIndex = project ? Math.max(project.items.length - 1, 0) : 0
+  const paramIndex = Number(itemParam)
+  const fromParam =
+    itemParam !== null && Number.isFinite(paramIndex)
+      ? Math.min(Math.max(paramIndex, 0), maxIndex)
+      : 0
+  const active = picked && picked.key === routeKey ? picked.index : fromParam
+  const setActive = (index: number) => setPicked({ key: routeKey, index })
+
+  useEffect(() => {
+    const title = titleRef.current
+    if (!title) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(title, { opacity: 1 })
+      return
+    }
+    const split = new SplitText(title, {
+      type: 'words,chars',
+      wordsClass: 'detail-word',
+      charsClass: 'detail-char',
+    })
+    gsap.set(title, { opacity: 1 })
+    gsap.from(split.chars, {
+      x: -50,
+      opacity: 0,
+      filter: 'blur(7px)',
+      stagger: 0.035,
+      duration: 0.7,
+      ease: 'power4.out',
+    })
+    return () => split.revert()
+  }, [project])
 
   if (!project) {
     return (
@@ -279,7 +315,7 @@ export default function ProjectDetail() {
       </Sticker>
 
       <div className="mx-auto max-w-[1440px] px-6 py-16 md:py-20">
-        <Button to="/#work" variant="ghost" accent="#e9ccff">
+        <Button section="work" variant="ghost" accent="#e9ccff">
           ← {t.work.back}
         </Button>
 
@@ -289,8 +325,9 @@ export default function ProjectDetail() {
               {text.category}
             </span>
             <h1
-              className="display mt-5"
-              style={{ fontSize: 'clamp(40px, 9vw, 130px)' }}
+              ref={titleRef}
+              className="detail-title display mt-5"
+              style={{ fontSize: 'clamp(30px, 8vw, 130px)' }}
             >
               {text.title}
             </h1>
@@ -314,8 +351,9 @@ export default function ProjectDetail() {
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {project.items.map((item, i) => (
               <button
-                key={item.en}
+                key={`${item.en}-${i}`}
                 onClick={() => setActive(i)}
+                aria-pressed={i === active}
                 className={`outline rounded-[20px] p-5 text-left transition-transform duration-200 hover:-translate-y-1 ${
                   i === active
                     ? 'bg-carbon text-paper-white'
@@ -323,17 +361,17 @@ export default function ProjectDetail() {
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  {item.video && (
+                  {!!item.video?.length && (
                     <span aria-hidden className="text-lg">
                       ▶
                     </span>
                   )}
-                  {item.audio && (
+                  {!!item.audio?.length && (
                     <span aria-hidden className="text-lg">
                       ♪
                     </span>
                   )}
-                  {item.images && (
+                  {!!item.images?.length && (
                     <span aria-hidden className="text-lg">
                       ▦
                     </span>
@@ -347,14 +385,16 @@ export default function ProjectDetail() {
           </div>
         )}
 
-        <div className="mt-12" key={active}>
-          <ItemMedia
-            item={current}
-            label={current[lang]}
-            lang={lang}
-            t={t}
-          />
-        </div>
+        {current && (
+          <div className="mt-12 item-in" key={`${project.slug}-${active}`}>
+            <ItemMedia
+              item={current}
+              label={current[lang]}
+              lang={lang}
+              t={t}
+            />
+          </div>
+        )}
 
         {related.length > 0 && (
           <div className="mt-16">
