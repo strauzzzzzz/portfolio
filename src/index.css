@@ -514,3 +514,39 @@ body {
   display: inline-block;
   white-space: nowrap;
 }
+
+/* ---------- Admin sheets ---------- */
+.admin-fade {
+  animation: admin-fade 0.25s ease both;
+}
+
+.admin-sheet {
+  animation: admin-sheet 0.4s var(--smooth-ease) both;
+}
+
+@keyframes admin-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-fade,
+  .admin-sheet {
+    animation: none !important;
+  }
+}

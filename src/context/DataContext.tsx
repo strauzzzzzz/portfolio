@@ -44,6 +44,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const list: Project[] = projectRows.map((p) => {
         idToSlug[p.id] = p.slug
         return {
+          id: p.id,
           slug: p.slug,
           image: p.image,
           color: p.color,
@@ -72,6 +73,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (!project) continue
 
         const w: WorkItem = {
+          id: it.id,
+          featured: Boolean(it.featured),
           en: it.title_en,
           ru: it.title_ru,
           desc:

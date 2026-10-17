@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
 import Home from './pages/Home'
 import ProjectDetail from './pages/ProjectDetail'
-import Admin from './pages/Admin'
 import Preloader from './components/Preloader'
+
+const Admin = lazy(() => import('./pages/Admin'))
 import { useData } from './context/DataContext'
 import { scrollToSection } from './lib/scroll'
 import { setIntroDone } from './lib/intro'
@@ -38,7 +39,14 @@ function AppRoutes() {
       <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/work/:slug" element={<ProjectDetail />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={null}>
+              <Admin />
+            </Suspense>
+          }
+        />
       </Routes>
     </div>
   )

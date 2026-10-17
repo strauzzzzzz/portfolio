@@ -13,6 +13,8 @@ export type ProjectText = {
 }
 
 export type WorkItem = {
+  id?: string
+  featured?: boolean
   en: string
   ru: string
   desc?: { en: string; ru: string }
@@ -22,6 +24,7 @@ export type WorkItem = {
 }
 
 export type Project = {
+  id?: string
   slug: string
   image: string
   color: string
